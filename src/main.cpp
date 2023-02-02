@@ -1,8 +1,8 @@
-#include "pgh.h"
+#include "../inc/pgh.h"
 
 int main(void) 
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(600, 500), "PONG");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -20,17 +20,17 @@ int main(void)
         window.display();
     }
 
-	initscr();
+	// initscr();
 
-	int max_y, max_x;
+	// int max_y, max_x;
 
-	getmaxyx(stdscr, max_y, max_x);
+	// getmaxyx(stdscr, max_y, max_x);
 
-	namegame(max_y, max_x);  //statr program
-	clear();
+	// namegame(max_y, max_x);  //statr program
+	// clear();
 
-	menu_2(max_y, max_x);
-    clear();
+	// menu_2(max_y, max_x);
+    // clear();
 
     return 0;
 }

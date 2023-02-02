@@ -1,4 +1,4 @@
-#include "Pong.h"
+#include "../inc/pgh.h"
 
 Ball::Ball(double y, double x, int speed)
 {

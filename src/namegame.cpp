@@ -1,4 +1,4 @@
-#include "Pong.h"
+#include "../inc/pgh.h"
 
 void namegame(int max_y, int max_x) 
 {

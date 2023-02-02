@@ -1,4 +1,4 @@
-#include "Pong.h"
+#include <inc/pgh.h>
 
 int menu(int max_y, int max_x) 
 {
@@ -67,4 +67,3 @@ int menu(int max_y, int max_x)
     endwin();
     refresh();
 } 
-

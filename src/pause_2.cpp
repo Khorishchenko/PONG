@@ -1,4 +1,4 @@
-#include "Pong.h"
+#include "../inc/pgh.h"
 
 void pause_2(int nRezul, int nInteger)
 {

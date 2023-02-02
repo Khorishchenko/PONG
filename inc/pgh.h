@@ -16,6 +16,10 @@
 #include <cstdlib>
 #include <sstream>
 
+#ifdef SFML_SYSTEM_IOS
+#include <SFML/Main.hpp>
+#endif
+
 int info(int max_y, int max_x);
 int menu(int max_y, int max_x);
 int menu_2(int max_y,int max_x);

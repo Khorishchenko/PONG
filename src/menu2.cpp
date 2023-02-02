@@ -1,4 +1,4 @@
-#include "Pong.h"
+#include "../inc/pgh.h"
 
 int menu_2(int max_y,int max_x)
 {
