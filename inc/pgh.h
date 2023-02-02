@@ -1,9 +1,7 @@
-#ifndef PONG_H
-#define PONG_H
+#ifndef PGH_H
+#define PGH_H
 
-// #include <SDL2/SDL.h>
 #include <iostream>
-#include <cstdlib>
 #include <cstring>
 #include <ncurses.h>
 #include <time.h>
@@ -11,7 +9,12 @@
 #include <sys/ioctl.h>
 #include <pthread.h>
 #include <curses.h>
-using namespace std;
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+#include <cmath>
+#include <ctime>
+#include <cstdlib>
+#include <sstream>
 
 int info(int max_y, int max_x);
 int menu(int max_y, int max_x);
