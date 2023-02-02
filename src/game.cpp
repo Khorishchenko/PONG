@@ -215,4 +215,3 @@ void draw()
     player1.drawPlayer(player1.getY(), player1.getX());
     player2.drawPlayer(player2.getY(), player2.getX());
 }
-

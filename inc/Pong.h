@@ -1,7 +1,7 @@
 #ifndef PONG_H
 #define PONG_H
 
-#include <SDL2/SDL.h>
+// #include <SDL2/SDL.h>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
