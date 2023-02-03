@@ -22,9 +22,13 @@ int main(void)
         }
 		window.clear(sf::Color(129, 181, 221, 0));
         
-		menu(window);
+		if (menu(window)) {
+            bool state = menuTwo(window);
+  
+        }
 
         window.clear(sf::Color(100, 100, 100, 0));
+
 		// Отрисовка окна
         window.display();
     }

@@ -1,6 +1,6 @@
 #include "../inc/pgh.h"
 
-void menu(sf::RenderWindow &window) 
+bool Menu(sf::RenderWindow &window) 
 {
 	sf::Texture menuTextureOne, menuTextureTwo, menuTextureThree, aboutTexture, menuBackground;
 	menuTextureOne.loadFromFile("images/111.png");
@@ -16,7 +16,9 @@ void menu(sf::RenderWindow &window)
 	menuBg.setPosition(600, 0);
  
 	bool isMenu = true;
+	bool state = false;
 	int  menuNum = 0;
+
 
 	//////////////////////////////МЕНЮ///////////////////
 	while (isMenu)
@@ -33,7 +35,7 @@ void menu(sf::RenderWindow &window)
  
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (menuNum == 1) isMenu = false;//если нажали первую кнопку, то выходим из меню 
+			if (menuNum == 1) isMenu = false, state = true;//если нажали первую кнопку, то выходим из меню 
 			if (menuNum == 2) { window.draw(about); window.display(); while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)); }
 			if (menuNum == 3)  { window.close(); isMenu = false; }
  
@@ -47,4 +49,5 @@ void menu(sf::RenderWindow &window)
 		window.display();
 	}
 	////////////////////////////////////////////////////
+	return state;
 }
