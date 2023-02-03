@@ -2,35 +2,32 @@
 
 int main(void) 
 {
-	sf::RenderWindow window(sf::VideoMode(600, 500), "PONG");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	// Устанавливаем 8-й уровень сглаживания
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
 
+	// Объект, который, собственно, является главным окном приложения
+	sf::RenderWindow window(sf::VideoMode(1176, 668), "PONG", sf::Style::Default, settings);
+		
+
+	// Главный цикл приложения: выполняется, пока открыто окно
     while (window.isOpen())
     {
+		// Обрабатываем очередь событий в цикле
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+		window.clear(sf::Color(129, 181, 221, 0));
+        
+		menu(window);
 
-        window.clear();
-        window.draw(shape);
+        window.clear(sf::Color(100, 100, 100, 0));
+		// Отрисовка окна
         window.display();
     }
-
-	// initscr();
-
-	// int max_y, max_x;
-
-	// getmaxyx(stdscr, max_y, max_x);
-
-	// namegame(max_y, max_x);  //statr program
-	// clear();
-
-	// menu_2(max_y, max_x);
-    // clear();
 
     return 0;
 }

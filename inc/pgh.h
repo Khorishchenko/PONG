@@ -20,8 +20,10 @@
 #include <SFML/Main.hpp>
 #endif
 
+
+void menu(sf::RenderWindow &window);
+
 int info(int max_y, int max_x);
-int menu(int max_y, int max_x);
 int menu_2(int max_y,int max_x);
 char start(int max_y, int max_x);
 void pause_2(int nRezul, int nInteger);

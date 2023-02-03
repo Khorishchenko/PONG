@@ -8,7 +8,7 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 include_directories(inc)
 
 set(HEADER_FILES inc/pgh.h)
-set(SOURCES src/main.cpp)
+set(SOURCES src/main.cpp src/menu.cpp)
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCES})
 

@@ -8,16 +8,16 @@ char start(int max_y, int max_x)
 	cbreak();
 	curs_set(0);
 
-	start_color();
-	init_pair(1, COLOR_RED, COLOR_BLACK);
+	// start_color();
+	// init_pair(1, COLOR_RED, COLOR_BLACK);
 
-    WINDOW * menuwin = newwin(9, max_x -6, max_y /2, 3);   
-	refresh();
+    // WINDOW * menuwin = newwin(9, max_x -6, max_y /2, 3);   
+	// refresh();
 	
-	box(menuwin,0, 0);
-	wrefresh(menuwin);    
+	// box(menuwin,0, 0);
+	// wrefresh(menuwin);    
 	
-	keypad(menuwin, true); 
+	// keypad(menuwin, true); 
     
 	char choices[3][27] = {"pl vs pl", "pl vs bot", " return"}; 
 	int choice;                                           
@@ -27,14 +27,14 @@ char start(int max_y, int max_x)
 	{
 		for(int i = 0; i < 3; i++) 
 		{
-			if(i == heighlight)	
-				wattron(menuwin, A_REVERSE);
-			mvwprintw(menuwin, i + 3,  max_x /2 - 7 , choices[i]);
-			wattroff(menuwin, A_REVERSE);
+			// if(i == heighlight)	
+			// 	wattron(menuwin, A_REVERSE);
+			// mvwprintw(menuwin, i + 3,  max_x /2 - 7 , choices[i]);
+			// wattroff(menuwin, A_REVERSE);
 		}
 
 		
-		choice = wgetch(menuwin);
+		// choice = wgetch(menuwin);
 
 		switch(choice) 
 		{
@@ -58,6 +58,6 @@ char start(int max_y, int max_x)
 	int z = strlen(choices[heighlight]);
 	return z;
 
-    endwin();
-    refresh();
+    // endwin();
+    // refresh();
 }

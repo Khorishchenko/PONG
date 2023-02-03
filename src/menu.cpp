@@ -1,69 +1,50 @@
-#include <inc/pgh.h>
+#include "../inc/pgh.h"
 
-int menu(int max_y, int max_x) 
+void menu(sf::RenderWindow &window) 
 {
+	sf::Texture menuTextureOne, menuTextureTwo, menuTextureThree, aboutTexture, menuBackground;
+	menuTextureOne.loadFromFile("images/111.png");
+	menuTextureTwo.loadFromFile("images/222.png");
+	menuTextureThree.loadFromFile("images/333.png");
+	aboutTexture.loadFromFile("images/about.png");
+	menuBackground.loadFromFile("images/pingPong.png");
 
-	initscr();
-	noecho();
-	cbreak();
-	curs_set(0);
+	sf::Sprite menuOne(menuTextureOne), menuTwo(menuTextureTwo), menuThree(menuTextureThree), about(aboutTexture), menuBg(menuBackground);
+	menuOne.setPosition(100, 30);
+	menuTwo.setPosition(100, 120);
+	menuThree.setPosition(100, 230);
+	menuBg.setPosition(600, 0);
+ 
+	bool isMenu = true;
+	int  menuNum = 0;
 
-	start_color();
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-
-    attron(A_BOLD | A_BLINK);
-    attron(COLOR_PAIR(1));
-    mvprintw(max_y / 2 - 1, max_x /2 - 6,  "WELCOME TO PONG");
-    attroff(COLOR_PAIR(1));
-    attroff(A_BOLD | A_BLINK);
-
-    WINDOW * menuwin = newwin(9, max_x -6, max_y /2, 3);   //Граница основного вектор меню/
-	refresh();
-	
-	box(menuwin,0, 0);
-	wrefresh(menuwin);    
-	
-	keypad(menuwin, true); 
-    
-	char choices[3][9] = {"Start", "Info", "Exit  "}; 
-	int choice;                                           
-	int heighlight = 0;
-
-	while(1) 
+	//////////////////////////////МЕНЮ///////////////////
+	while (isMenu)
 	{
-		for(int i = 0; i < 3; i++) 
+		menuOne.setColor(sf::Color::White);
+		menuTwo.setColor(sf::Color::White);
+		menuThree.setColor(sf::Color::White);
+		menuNum = 0;
+		window.clear(sf::Color(129, 181, 221));
+ 
+		if (sf::IntRect(100, 30, 300, 50).contains(sf::Mouse::getPosition(window))) { menuOne.setColor(sf::Color::Blue); menuNum = 1; }
+		if (sf::IntRect(100, 120, 300, 50).contains(sf::Mouse::getPosition(window))) { menuTwo.setColor(sf::Color::Blue); menuNum = 2; }
+		if (sf::IntRect(100, 230, 300, 50).contains(sf::Mouse::getPosition(window))) { menuThree.setColor(sf::Color::Blue); menuNum = 3; }
+ 
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if(i == heighlight)	
-				wattron(menuwin, A_REVERSE);
-			mvwprintw(menuwin, i + 3,  max_x /2 - 5 , choices[i]);
-			wattroff(menuwin, A_REVERSE);
+			if (menuNum == 1) isMenu = false;//если нажали первую кнопку, то выходим из меню 
+			if (menuNum == 2) { window.draw(about); window.display(); while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)); }
+			if (menuNum == 3)  { window.close(); isMenu = false; }
+ 
 		}
-
+ 
+		window.draw(menuBg);
+		window.draw(menuOne);
+		window.draw(menuTwo);
+		window.draw(menuThree);
 		
-		choice = wgetch(menuwin);
-
-		switch(choice) 
-		{
-			case KEY_UP:
-			heighlight--;
-			if (heighlight == -1)
-				heighlight = 0;
-			break;
-			case KEY_DOWN:
-			heighlight++;
-			if (heighlight == 3)
-				heighlight = 2;
-			break;
-			default:
-			break;
-		}
-		if(choice == 10)
-			break;
+		window.display();
 	}
-
-	int z = strlen(choices[heighlight]);
-	return z;
-
-    endwin();
-    refresh();
-} 
+	////////////////////////////////////////////////////
+}
