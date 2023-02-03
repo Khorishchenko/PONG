@@ -21,10 +21,10 @@ int main(void)
                 window.close();
         }
 		window.clear(sf::Color(129, 181, 221, 0));
-        
-		if (menu(window)) {
-            bool state = menuTwo(window);
-  
+in:        
+		if (Menu(window)) {
+            bool state = Start(window);
+            if (state) goto in;
         }
 
         window.clear(sf::Color(100, 100, 100, 0));

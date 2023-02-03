@@ -3,7 +3,47 @@
 int Start(sf::RenderWindow &window) 
 {
 	sf::Texture menuTextureOne, menuTextureTwo, menuTextureThree;
-	menuTextureOne.loadFromFile("images/");
-	menuTextureTwo.loadFromFile("images/");
-	menuTextureThree.loadFromFile("images/");
+	menuTextureOne.loadFromFile("images/444.png");
+	menuTextureTwo.loadFromFile("images/555.png");
+	menuTextureThree.loadFromFile("images/666.png");
+
+	sf::Sprite menuOne(menuTextureOne), menuTwo(menuTextureTwo), menuThree(menuTextureThree);
+
+	menuOne.setPosition(400, 30);
+	menuTwo.setPosition(400, 220);
+	menuThree.setPosition(400, 400);
+
+	bool isMenu = true;
+	bool state = false;
+	int  menuNum = 0;
+
+	while (isMenu)
+	{
+		menuOne.setColor(sf::Color::White);
+		menuTwo.setColor(sf::Color::White);
+		menuThree.setColor(sf::Color::White);
+
+		menuNum = 0;
+		window.clear(sf::Color(129, 181, 221));
+ 
+		if (sf::IntRect(300, 30, 300, 50).contains(sf::Mouse::getPosition(window))) { menuOne.setColor(sf::Color::Blue); menuNum = 1; }
+		if (sf::IntRect(300, 220, 300, 50).contains(sf::Mouse::getPosition(window))) { menuTwo.setColor(sf::Color::Blue); menuNum = 2; }
+		if (sf::IntRect(300, 400, 300, 50).contains(sf::Mouse::getPosition(window))) { menuThree.setColor(sf::Color::Blue); menuNum = 3; }
+ 
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			if (menuNum == 1) { } 
+			if (menuNum == 2) { }
+			if (menuNum == 3)  { isMenu = Menu(window); }
+ 
+		}
+ 
+		window.draw(menuOne);
+		window.draw(menuTwo);
+		window.draw(menuThree);
+		
+		window.display();
+	}
+	
+	return state;
 }
