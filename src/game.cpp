@@ -21,10 +21,12 @@ Game::Game(RenderWindow& window, const unsigned int& windowWidth, const unsigned
     restart.setStyle(sf::Text::Regular);
     restart.setPosition((m_windowWidth / 2) - 100, (m_windowHeight / 2) + 50);
 }
+
 RenderWindow& Game::GetWindow()
 {
     return m_window;
 }
+
 void Game::RestartGame()
 {
     isPaused = false;
@@ -37,6 +39,7 @@ void Game::RestartGame()
     player2 = std::make_unique<Paddle>(m_windowWidth - 50, m_windowHeight / 2, m_window);
     ball = std::make_unique<Ball>(m_windowWidth / 2, m_windowHeight / 2, m_window);
 }
+
 void Game::HandleCollision()
 {
     if (ball->getShape().getPosition().x - ball->getRadius() < 0.0f)
@@ -76,17 +79,20 @@ void Game::HandleCollision()
         ball->getShape().setPosition(player1->getShape().getPosition().x - ball->getRadius() - player1->getShape().getSize().x / 2 - 0.1f, ball->getShape().getPosition().y);
     }
 }
-void Game::HandleInput()
+
+void Game::HandleInput(char &keyOne, char &keyTwo, char &keyThree, char &keyFour)
 {
-    player1->HandleInput1();
-    player2->HandleInput2();
+    player1->HandleInput1(keyOne, keyTwo);
+    player2->HandleInput2(keyThree, keyFour);
 }
+
 void Game::Update()
 {
     player1->Update();
     player2->Update();
     ball->Update();
 }
+
 void Game::Draw()
 {
     player1->Draw();
@@ -96,8 +102,13 @@ void Game::Draw()
     m_window.draw(gameOver);
     m_window.draw(restart);
 }
+
 void Game::Run()
 {
+    char W;
+    char S;
+    char Up;
+    char Down;
     //Game Loop
     while (m_window.isOpen())
     {
@@ -111,11 +122,14 @@ void Game::Run()
                 if(!isGameOver)
                     isPaused = !isPaused;
             }
-            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::R)
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::R) {
+                S = 's',W = 'w', Down = 'd', Up = 'p'; 
                 RestartGame();
-
-            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::W)
-                std::cout << " I work " << std::endl;
+            }
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::W) { W = 'W'; S = 's';}
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::S) { S = 'S'; W = 'w';}
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::Up) { Up = 'U'; Down = 'd';}
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::Down) { Down = 'D'; Up = 'p';}
         }
 
         m_window.clear();
@@ -123,7 +137,7 @@ void Game::Run()
 
         if (!isPaused)
         {
-            HandleInput();
+            HandleInput(W, S, Up, Down);
             Update();
         }
         if (isPaused)

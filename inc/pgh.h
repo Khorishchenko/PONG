@@ -56,8 +56,8 @@ public:
     RectangleShape getShape();
     void moveUp();
     void moveDown();
-    void HandleInput1();
-    void HandleInput2();
+    void HandleInput1(char &keyOne, char &keyTwo);
+    void HandleInput2(char &keyThree, char &keyFour);
     void Update() override;
     void Draw() override;
 };
@@ -104,7 +104,7 @@ public:
     RenderWindow& GetWindow();
     void RestartGame();
     void HandleCollision();
-    void HandleInput();
+    void HandleInput(char &keyOne, char &keyTwo, char &keyThree, char &keyFour);
     void Update();
     void Draw();
     void Run();

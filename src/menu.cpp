@@ -2,14 +2,13 @@
 
 int Menu(sf::RenderWindow &window) 
 {
-	sf::Texture menuTextureOne, menuTextureTwo, menuTextureThree, aboutTexture, menuBackground;
+	sf::Texture menuTextureOne, menuTextureTwo, menuTextureThree, menuBackground;
 	menuTextureOne.loadFromFile("images/111.png");
 	menuTextureTwo.loadFromFile("images/222.png");
 	menuTextureThree.loadFromFile("images/333.png");
-	aboutTexture.loadFromFile("images/about.png");
 	menuBackground.loadFromFile("images/pingPong.png");
 
-	sf::Sprite menuOne(menuTextureOne), menuTwo(menuTextureTwo), menuThree(menuTextureThree), about(aboutTexture), menuBg(menuBackground);
+	sf::Sprite menuOne(menuTextureOne), menuTwo(menuTextureTwo), menuThree(menuTextureThree), menuBg(menuBackground);
 	menuOne.setPosition(60, 30);
 	menuTwo.setPosition(60, 120);
 	menuThree.setPosition(60, 230);

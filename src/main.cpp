@@ -7,7 +7,7 @@ int main(void)
 	settings.antialiasingLevel = 8;
 
 	// Объект, который, собственно, является главным окном приложения
-	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "PONG", sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "PONG GAME", sf::Style::Default, settings);
 		
 
 	// Главный цикл приложения: выполняется, пока открыто окно

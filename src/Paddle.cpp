@@ -26,25 +26,25 @@ void Paddle::moveDown()
     position.y += speed;
 }
 
-void Paddle::HandleInput1()
+void Paddle::HandleInput1(char &keyOne, char &keyTwo)
 {
-    if (Keyboard::isKeyPressed(Keyboard::W) && (paddleShape.getPosition().y - paddleShape.getSize().y / 2 > -20.0f))
+    if (keyOne == 'W' && (paddleShape.getPosition().y - paddleShape.getSize().y / 2 > -20.0f))
     {
         paddleShape.move(0.f, -speed);
     }
-    else if (Keyboard::isKeyPressed(Keyboard::S) && (paddleShape.getPosition().y + paddleShape.getSize().y / 2 < m_window.getSize().y - 35.f))
+    else if (keyTwo == 'S' && (paddleShape.getPosition().y + paddleShape.getSize().y / 2 < m_window.getSize().y - 35.f))
     {
         paddleShape.move(0.f, speed);
     }
 }
 
-void Paddle::HandleInput2()
+void Paddle::HandleInput2(char &keyThree, char &keyFour)
 {
-    if (Keyboard::isKeyPressed(Keyboard::Up) && (paddleShape.getPosition().y - paddleShape.getSize().y / 2 > -20.0f))
+    if (keyThree == 'U' && (paddleShape.getPosition().y - paddleShape.getSize().y / 2 > -20.0f))
     {
         paddleShape.move(0.f, -speed);
     }
-    else if (Keyboard::isKeyPressed(Keyboard::Down) && (paddleShape.getPosition().y + paddleShape.getSize().y / 2 < m_window.getSize().y - 35.f))
+    else if (keyFour == 'D' && (paddleShape.getPosition().y + paddleShape.getSize().y / 2 < m_window.getSize().y - 35.f))
     {
         paddleShape.move(0.f, speed);
     }
