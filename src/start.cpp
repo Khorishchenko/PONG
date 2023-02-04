@@ -9,9 +9,9 @@ int Start(sf::RenderWindow &window)
 
 	sf::Sprite menuOne(menuTextureOne), menuTwo(menuTextureTwo), menuThree(menuTextureThree);
 
-	menuOne.setPosition(400, 30);
-	menuTwo.setPosition(400, 220);
-	menuThree.setPosition(400, 400);
+	menuOne.setPosition(300, 30);
+	menuTwo.setPosition(300, 220);
+	menuThree.setPosition(300, 400);
 
 	bool isMenu = true;
 	bool state = false;
@@ -19,6 +19,13 @@ int Start(sf::RenderWindow &window)
 
 	while (isMenu)
 	{
+		sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
 		menuOne.setColor(sf::Color::White);
 		menuTwo.setColor(sf::Color::White);
 		menuThree.setColor(sf::Color::White);
@@ -26,15 +33,15 @@ int Start(sf::RenderWindow &window)
 		menuNum = 0;
 		window.clear(sf::Color(129, 181, 221));
  
-		if (sf::IntRect(300, 30, 300, 50).contains(sf::Mouse::getPosition(window))) { menuOne.setColor(sf::Color::Blue); menuNum = 1; }
-		if (sf::IntRect(300, 220, 300, 50).contains(sf::Mouse::getPosition(window))) { menuTwo.setColor(sf::Color::Blue); menuNum = 2; }
-		if (sf::IntRect(300, 400, 300, 50).contains(sf::Mouse::getPosition(window))) { menuThree.setColor(sf::Color::Blue); menuNum = 3; }
+		if (sf::IntRect(200, 30, 300, 50).contains(sf::Mouse::getPosition(window))) { menuOne.setColor(sf::Color::Blue); menuNum = 1; }
+		if (sf::IntRect(200, 220, 300, 50).contains(sf::Mouse::getPosition(window))) { menuTwo.setColor(sf::Color::Blue); menuNum = 2; }
+		if (sf::IntRect(200, 400, 300, 50).contains(sf::Mouse::getPosition(window))) { menuThree.setColor(sf::Color::Blue); menuNum = 3; }
  
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (menuNum == 1) { } 
+			if (menuNum == 1) { Game(window); state = false; isMenu = false;} 
 			if (menuNum == 2) { }
-			if (menuNum == 3)  { isMenu = Menu(window); }
+			if (menuNum == 3) { isMenu = Menu(window); }
  
 		}
  

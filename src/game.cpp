@@ -1,217 +1,127 @@
 #include "../inc/pgh.h"
 
-int ch;
-int width = 80;
-int height = 24;
-int dir = 1;
-int player1Points, player2Points = 0;
-bool quit;
-char wallTexture, playerTexture;
-bool player1Serve, player2Serve = false;
 
-Player player1(height / 2, 2);
-Player player2(height / 2, width - 3);
-
-Ball ball(height / 2, 3, 1);
-
-void game(int nInteger) 
+void Game(sf::RenderWindow &window)
 {
+    bool isMenu = true;
 
-    setup();
+    Bat bat(windowWidth/2, windowHeight-20);
+    Ball ball(windowWidth/2+50, windowHeight/2);
+    AIBat aibat(windowWidth/2, 10);
 
-    while(!quit)
-    {
-        input(nInteger);
-        logic(nInteger);
-        draw();
-    }
-    endwin();
-}
+	while (isMenu)
+	{
+        sf::Event event;
+		if(((event.type == event.KeyPressed) && event.key.code == Keyboard::Left)) {
+            bat.moveBatLeft();
+        }
+        
+        if(((event.type == event.KeyPressed) && event.key.code == Keyboard::Right)) {
+            bat.moveBatRight();
+        }
+        
+        //LOGIC//////////
+        ball.reboundSides();
+        ball.passTop();
+        ball.passBottom();
+        
+        if (ball.getBallFloatRect().intersects(bat.getBatFloatRect())) {
+            ball.reboundBatorAI();
+        }
+        
+        if (ball.getBallFloatRect().intersects(aibat.getAIBatFloatRect())) { 
+            ball.reboundBatorAI();
+        }
 
-void setup()
-{
-    wallTexture = '=';
+        if (ball.getBallFloatRect().left > (aibat.getAIBatFloatRect().left) + 50) {
+              if (aibatcounter % 60 == 0) aibat.moveAIBatRight();
+        }
+        
+        if (ball.getBallFloatRect().left < (aibat.getAIBatFloatRect().left) + 50) {
+              if (aibatcounter % 60 == 0) aibat.moveAIBatLeft();
+        }
+    
+        if (ball.getBallPosition.x > windowWidth)
+            aibat.AIBatSpeedReverse();
+      
+        
+        //TEXT and FONT
+        std::stringstream ss;
+                
+        ss << "Score: " << batscore <<"       Lives: " << lives;
+         
+        Text text;
+        Font font;
+        font.loadFromFile("Nexa Light.otf");
 
-    initscr();
-    cbreak();
-    noecho();
-    curs_set(0);
-    keypad(stdscr, TRUE);
-    timeout(50);
+        text.setFont(font);
+        text.setCharacterSize(45);
+        text.setFillColor(sf::Color::White);
+        
+        text.setString(ss.str());
 
-    quit = false;
-    player1Points = 0;
-    player2Points = 0;
-}
+        
+        // PAUSE MESSAGE
+        
+        std::stringstream ss2;
+        ss2 << "You ran out of lives. \n\nYour score is " << batscore <<".\n\nPress any key to play again.";
+         Text pauseMessage;
+        
+        
+        pauseMessage.setCharacterSize(50);
+        pauseMessage.setPosition(windowWidth/2-400, windowHeight/2-100);
+        pauseMessage.setFont(font);
+        pauseMessage.setString(ss2.str());
 
-void input(int nInteger)
-{
-    ch = getch();
-    switch(ch) {
-        case KEY_UP:
-            if(player2.getY() != 3)
-                player2.setY(player2.getY() - 1);
-            break;
-        case KEY_DOWN:
-            if(player2.getY() != height - 4)
-                player2.setY(player2.getY() + 1);
-            break;
-        case KEY_LEFT:
-            if(player2.getX() != width / 2 + 4)
-                player2.setX(player2.getX() - 1);
-            break;
-        case KEY_RIGHT:
-            if(player2.getX() != width - 3)
-                player2.setX(player2.getX() + 1);
-            break;
-        case 'w':
-            if(player1.getY() != 3)
-                player1.setY(player1.getY() - 1);
-            break;
-        case 's':
-            if(player1.getY() != height - 4)
-                player1.setY(player1.getY() + 1);
-            break;
-        case 'a':
-            if(player1.getX() != 2)
-                player1.setX(player1.getX() - 1);
-            break;
-        case 'd':
-            if(player1.getX() != width / 2 - 4)
-                player1.setX(player1.getX() + 1);
-            break;
-        case ' ':
-            if(player1Serve) {
-                player1Serve = false;
-                dir = 1;
+        // // START MESSAGE
+        //     std::stringstream ss3;
+        //     ss3 << "Welcome to Pong.\n\nPress any key to begin";
+        //      Text startMessage;
+            
+        //     startMessage.setCharacterSize(50);
+        //      startMessage.setPosition(windowWidth/2-400, windowHeight/2-100);
+        //     startMessage.setFont(font);
+        // startMessage.setString(ss3.str());
+
+        // UPDATE
+        if(aibatcounter == 1000000) {
+            aibatcounter = 0;
+        }
+        aibatcounter++;
+        ball.update();
+        bat.update();
+        aibat.update();
+
+        // DRAW
+        window.clear(Color(26, 128, 182, 255));
+       
+        if (lives == 0) {
+            window.draw(pauseMessage);
+            ball.stop();
+            
+            if(event.type == event.KeyPressed) {
+                lives = 3;
+                batscore = 0;
+                ball.go();
             }
-            else if(player2Serve) {
-                player2Serve = false;
-                dir = 2;
+        }
+        else if (lives == -1) {
+            // window.draw(startMessage);
+            ball.stop();
+
+            if(event.type == event.KeyPressed) {
+                lives = 3;
+                batscore = 0;
+                ball.go();
             }
-            break;
-        case 'q':
-            clear();
-            refresh();
-            echo();
-            pause(nInteger);
-            break;
-    }
-}
-
-void logic(int nInt)
-{
-
-    if(ball.getX() == player1.getX() + 1 || ball.getX() == player1.getX()) {
-        if(ball.getY() <= player1.getY() + 2 && ball.getY() >= player1.getY() - 2) {
-            if(ball.getY() >= player1.getY() - 2 && ball.getY() < player1.getY())
-                dir = 3;
-            else if(ball.getY() <= player1.getY() + 2 && ball.getY() > player1.getY())
-                dir = 4;
-            else
-                dir = 1;
         }
-    }
-    if (nInt == 1)
-    {
-        if (ball.getY() > player2.getY()) 
-        { 
-            if(player2.getY() != height - 4)
-                    player2.setY(player2.getY() + 1);
-        } 
-        if (ball.getY() < player2.getY()) 
-        {  
-            if(player2.getY() != 3)
-                    player2.setY(player2.getY() - 1);
+        else {
+            window.draw(bat.getBatObject());
+            window.draw(ball.getBallObject());
+            
+            window.draw(text);
+            window.draw((aibat.getAIBatObject()));
         }
+        window.display();
     }
-    if(ball.getX() == player2.getX() - 1  || ball.getX() == player2.getX()) {
-        if(ball.getY() <= player2.getY() + 2 && ball.getY() >= player2.getY() - 2) {
-            if (ball.getY() >= player2.getY() - 2 && ball.getY() < player2.getY())
-                dir = 5;
-            else if (ball.getY() <= player2.getY() + 2 && ball.getY() > player2.getY())
-                dir = 6;
-            else
-                dir = 2;
-        }
-    }
-
-    if(ball.getY() == height - 2) {
-        if (dir == 6)
-            dir = 5;
-        else
-            dir = 3;
-    }
-
-    if(ball.getY() == 1) {
-        if(dir == 5)
-            dir = 6;
-        else
-            dir = 4;
-    }
-
-    if(ball.getX() == 0) {
-        player2Points++;
-        player1Serve = true;
-    }
-
-    if(ball.getX() == width) {
-        player1Points++;
-        player2Serve = true;
-    }
-
-    if(player1Serve) {
-        ball.setX(player1.getX() + 1);
-        ball.setY(player1.getY());
-    }
-
-    if(player2Serve) {
-        ball.setX(player2.getX() - 1);
-        ball.setY(player2.getY());
-    }
-
-    if(!player1Serve || !player2Serve) {
-        if(dir == 1)
-            ball.setX(ball.getX() + 1);
-        if(dir == 2)
-            ball.setX(ball.getX() - 1);
-
-        if(dir == 3) {
-            ball.setX(ball.getX() + 1);
-            ball.setY(ball.getY() - 0.25);
-        }
-        if(dir == 4) {
-            ball.setX(ball.getX() + 1);
-            ball.setY(ball.getY() + 0.25);
-        }
-        if(dir == 5) {
-            ball.setX(ball.getX() - 1);
-            ball.setY(ball.getY() - 0.25);
-        }
-        if(dir == 6) {
-            ball.setX(ball.getX() - 1);
-            ball.setY(ball.getY() + 0.25);
-        }
-    }
-}
-
-void draw()
-{
-    erase();
-    refresh();
-
-    for(int i = 0; i < width; i++) {
-        mvaddch(0, i, wallTexture);
-        mvaddch(height - 1, i, wallTexture);
-    }
-
-    for(int i = 1; i < height - 1; i++)
-        mvaddch(i, width / 2, ':');
-
-    mvprintw(1, width / 2 / 2, "%i", player1Points);
-    mvprintw(1, width / 2 + width / 2 / 2, "%i", player2Points);
-
-    ball.drawBall(ball.getY(), ball.getX());
-    player1.drawPlayer(player1.getY(), player1.getX());
-    player2.drawPlayer(player2.getY(), player2.getX());
 }
