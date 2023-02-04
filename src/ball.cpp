@@ -1,75 +1,52 @@
 #include "../inc/pgh.h"
 
-// BALL functions
-RectangleShape Ball::getBallObject() {
-    return BallObject;
-}
-
-Ball::Ball(double x, double y) {
-    ballPosition.x = x;
-    ballPosition.y = y;
-    BallObject.setSize(sf::Vector2f(10, 10));
-    
-    BallObject.setPosition(ballPosition);
-    
-    BallObject.setFillColor(sf::Color::White);
-}
-
-void Ball::update() {
-    ballPosition.x += ballVelocityX;
-    ballPosition.y += ballVelocityY;
-    
-    BallObject.setPosition(ballPosition);
-}
-
-
-void Ball::reboundSides() {
-    if (ballPosition.x > windowWidth) ballVelocityX *=  -1;
-    else if (ballPosition.x <0) ballVelocityX *= -1;
-}
-
-
-void Ball::passTop() {
-
-    if (ballPosition.y < 0)
+Ball::Ball(float startX, float startY, RenderWindow& window) : GameObject(startX, startY, window)
+{
+    ballShape.setRadius(radius);
+    ballShape.setPosition(position);
+    do
     {
-        batscore++;
-        ballPosition.x = windowWidth /2 ;
-        ballPosition.y = windowHeight / 2;
-
-        if(rand() % 2 == 1) ballVelocityY *= -1;
-        if (rand()% 2 == 2) ballVelocityX *= -1; 
-    }
+        ballAngle = (std::rand() % 360) * 2 * pi / 360;
+    } while (std::abs(std::cos(ballAngle)) < 0.7f);
 }
 
-void Ball::passBottom()  {
-  if (ballPosition.y > windowHeight+10)
-  { 
-        ballPosition.x = windowWidth/2;
-        ballPosition.y = windowHeight/2;
-        lives--;
-
-        if(rand() % 2 == 1) ballVelocityY *= -1;
-        if (rand()% 2 == 2) ballVelocityX *= -1;
-  }
+FloatRect Ball::getPosition()
+{
+    return ballShape.getGlobalBounds();
 }
 
-FloatRect Ball::getBallFloatRect() {
-    return BallObject.getGlobalBounds();
-}
-    
-
-void Ball::reboundBatorAI() {
-    ballPosition.y -= (ballVelocityY * 30);
-    ballVelocityY *= -1;
+CircleShape Ball::getShape()
+{
+    return ballShape;
 }
 
-void Ball::stop () {
-    ballVelocityY = 0;
-    ballVelocityX = 0;
+float Ball::getRadius()
+{
+    return radius;
 }
 
-void Ball::go () {
-    ballVelocityY = 0.5f;
-    ballVelocityX = 0.5f;
+void Ball::reboundTop()
+{
+    ballAngle = -ballAngle;
+    ballShape.setPosition(ballShape.getPosition().x, radius + 0.1f);
+}
+
+void Ball::reboundBottom()
+{
+    ballAngle = -ballAngle;
+    ballShape.setPosition(ballShape.getPosition().x, m_window.getSize().y - radius - 0.1f);
+}
+
+void Ball::reboundBat()
+{
+}
+
+void Ball::Update()
+{
+    ballShape.move(std::cos(ballAngle) * (speed - 0.1), std::sin(ballAngle) * (speed - 0.1));
+}
+
+void Ball::Draw()
+{
+    m_window.draw(ballShape);
 }

@@ -1,6 +1,6 @@
 #include "../inc/pgh.h"
 
-int Start(sf::RenderWindow &window) 
+bool Start(sf::RenderWindow &window) 
 {
 	sf::Texture menuTextureOne, menuTextureTwo, menuTextureThree;
 	menuTextureOne.loadFromFile("images/444.png");
@@ -39,10 +39,9 @@ int Start(sf::RenderWindow &window)
  
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (menuNum == 1) { Game(window); state = false; isMenu = false;} 
+			if (menuNum == 1) { Games(window); isMenu = false; state = false;} 
 			if (menuNum == 2) { }
-			if (menuNum == 3) { isMenu = Menu(window); }
- 
+			if (menuNum == 3) { isMenu = false; state = true; }
 		}
  
 		window.draw(menuOne);

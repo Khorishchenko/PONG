@@ -14,6 +14,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <sstream>
+#include <algorithm>
 
 #ifdef SFML_SYSTEM_IOS
 #include <SFML/Main.hpp>
@@ -21,81 +22,92 @@
 
 using namespace sf;
 
-int Start(sf::RenderWindow &window);
-bool Menu(sf::RenderWindow &window);
-void Game(sf::RenderWindow &window);
+bool Start(sf::RenderWindow &window);
+int  Menu(sf::RenderWindow &window);
+void Games(sf::RenderWindow &window);
+bool Info(sf::RenderWindow &window);
 
 
 static int windowWidth = 1000;
 static int windowHeight = 700;
-static int batscore = 0;
-static int lives = -1;
-static int aibatcounter = 0;
 
 
-class Bat 
+class GameObject
 {
+protected:
+    Vector2f position;
+    float speed;
+    RenderWindow& m_window;
 public:
-    Bat(double x, double y);
-    Vector2f getBatPosition();
-    RectangleShape getBatObject();
-    FloatRect getBatFloatRect();
-    void moveBatLeft();
-    void moveBatRight();
-    void update();
-
-private:
-    Vector2f batPosition;
-    double batSpeed = 0.85f;
-    RectangleShape BatObject;
+    GameObject(float startX, float startY, RenderWindow& window);
+    virtual void Draw() = 0;
+    virtual void Update() = 0;
 };
 
-class AIBat 
+class Paddle : public GameObject
 {
-public:
-    AIBat(double x, double y);
-
-    Vector2f getAIBatPosition();
-    RectangleShape getAIBatObject();
-    FloatRect getAIBatFloatRect();
-    void moveAIBatLeft();
-    void moveAIBatRight();
-    void update();
-    void Rebound();
-    void AIBatSpeedReverse();
-
 private:
-    Vector2f aiBatPosition;
-    double aiBatSpeed = 24;
-    RectangleShape aiBatObject;
+    RectangleShape paddleShape;
+    const int shapeWidth = 10;
+    const int shapeHeight = 50;
+public:
+    Paddle(float startX, float startY, RenderWindow& window);
+    FloatRect getPosition();
+    RectangleShape getShape();
+    void moveUp();
+    void moveDown();
+    void HandleInput1();
+    void HandleInput2();
+    void Update() override;
+    void Draw() override;
 };
 
-
-
-class Ball 
+class Ball : public GameObject
 {
-public:
-    Ball(double x, double y);
-
-    Vector2f getBallPosition;
-    FloatRect getBallFloatRect();
-    RectangleShape getBallObject();
-    void reboundSides();
-    void passTop();
-    void passBottom();
-    void intersectBat();
-    void intersectAIBat();
-    void reboundBatorAI();
-    void update();
-    void stop();
-    void go();
-
-    double ballVelocityX = 0.5f;
-    double ballVelocityY = 0.5f;
-
 private:
-    RectangleShape BallObject;
-    Vector2f ballPosition;
+    CircleShape ballShape;
+    const float radius = 10.0f;
+public:
+    float ballAngle = 0.0f;
+    const float pi = 3.14159f;
+public:
+    Ball(float startX, float startY, RenderWindow& window);
+    FloatRect getPosition();
+    CircleShape getShape();
+    float getRadius();
+    void reboundTop();
+    void reboundBottom();
+    void reboundBat();
+    void Update() override;
+    void Draw() override;
+};
+
+class Game
+{
+private:
+    std::unique_ptr<Paddle> player1;
+    std::unique_ptr<Paddle> player2;
+    std::unique_ptr<Ball> ball;
+    Font font;
+    Text pause;
+    Text gameOver;
+    Text restart;
+    bool isPaused;
+    bool isGameOver;
+    bool isRestart;
+public:
+    RenderWindow& m_window;
+    const unsigned int m_windowWidth;
+    const unsigned int m_windowHeight;
+public:
+    Game(RenderWindow& window, const unsigned int& windowWidth, const unsigned int& windowHeight);
+    RenderWindow& GetWindow();
+    void RestartGame();
+    void HandleCollision();
+    void HandleInput();
+    void Update();
+    void Draw();
+    void Run();
 };
 
 #endif

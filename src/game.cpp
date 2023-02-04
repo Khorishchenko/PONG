@@ -1,127 +1,136 @@
 #include "../inc/pgh.h"
 
-
-void Game(sf::RenderWindow &window)
+Game::Game(RenderWindow& window, const unsigned int& windowWidth, const unsigned int& windowHeight) : 
+    m_window(window), m_windowWidth(windowWidth), m_windowHeight(windowHeight)
 {
-    bool isMenu = true;
-
-    Bat bat(windowWidth/2, windowHeight-20);
-    Ball ball(windowWidth/2+50, windowHeight/2);
-    AIBat aibat(windowWidth/2, 10);
-
-	while (isMenu)
-	{
+    RestartGame();
+    font.loadFromFile("images/American Captain.ttf");
+    gameOver.setFont(font);
+    gameOver.setCharacterSize(42);
+    gameOver.setFillColor(sf::Color::White);
+    gameOver.setStyle(sf::Text::Bold);
+    gameOver.setPosition((m_windowWidth / 2) - 100, m_windowHeight / 2);
+    pause.setFont(font);
+    pause.setCharacterSize(42);
+    pause.setFillColor(sf::Color::White);
+    pause.setStyle(sf::Text::Regular);
+    pause.setPosition((m_windowWidth / 2) - 80, m_windowHeight / 2);
+    restart.setFont(font);
+    restart.setCharacterSize(25);
+    restart.setFillColor(sf::Color::White);
+    restart.setStyle(sf::Text::Regular);
+    restart.setPosition((m_windowWidth / 2) - 100, (m_windowHeight / 2) + 50);
+}
+RenderWindow& Game::GetWindow()
+{
+    return m_window;
+}
+void Game::RestartGame()
+{
+    isPaused = false;
+    isGameOver = false;
+    isRestart = true;
+    gameOver.setString("");
+    pause.setString("");
+    restart.setString("");
+    player1 = std::make_unique<Paddle>(40, m_windowHeight / 2, m_window);
+    player2 = std::make_unique<Paddle>(m_windowWidth - 50, m_windowHeight / 2, m_window);
+    ball = std::make_unique<Ball>(m_windowWidth / 2, m_windowHeight / 2, m_window);
+}
+void Game::HandleCollision()
+{
+    if (ball->getShape().getPosition().x - ball->getRadius() < 0.0f)
+    {
+        isGameOver = true;
+        gameOver.setString("PLAYER 2 WINS!");
+        restart.setString("Press R to restart\nPress Esc to Quit");
+    }
+    else if (ball->getShape().getPosition().x + ball->getRadius() > m_windowWidth)
+    {
+        isGameOver = true;
+        gameOver.setString("PLAYER 1 WINS!");
+        restart.setString("Press R to restart\nPress Esc to Quit");
+    }
+    else if (ball->getShape().getPosition().y - ball->getRadius() < 0.f)
+    {
+        ball->reboundTop();
+    }
+    else if (ball->getShape().getPosition().y + ball->getRadius() > m_windowHeight)
+    {
+        ball->reboundBottom();
+    }
+    else if (ball->getPosition().intersects(player2->getPosition()))
+    {
+        if (ball->getShape().getPosition().y > player2->getShape().getPosition().y)
+            ball->ballAngle = ball->pi - ball->ballAngle + (std::rand() % 20) * ball->pi / 180;
+        else
+            ball->ballAngle = ball->pi - ball->ballAngle - (std::rand() % 20) * ball->pi / 180;
+        ball->getShape().setPosition(player2->getShape().getPosition().x - ball->getRadius() - player2->getShape().getSize().x / 2 - 0.1f, ball->getShape().getPosition().y);
+    }
+    else if (ball->getPosition().intersects(player1->getPosition()))
+    {
+        if (ball->getShape().getPosition().y > player1->getShape().getPosition().y)
+            ball->ballAngle = ball->pi - ball->ballAngle + (std::rand() % 20) * ball->pi / 180;
+        else
+            ball->ballAngle = ball->pi - ball->ballAngle - (std::rand() % 20) * ball->pi / 180;
+        ball->getShape().setPosition(player1->getShape().getPosition().x - ball->getRadius() - player1->getShape().getSize().x / 2 - 0.1f, ball->getShape().getPosition().y);
+    }
+}
+void Game::HandleInput()
+{
+    player1->HandleInput1();
+    player2->HandleInput2();
+}
+void Game::Update()
+{
+    player1->Update();
+    player2->Update();
+    ball->Update();
+}
+void Game::Draw()
+{
+    player1->Draw();
+    player2->Draw();
+    ball->Draw();
+    m_window.draw(pause);
+    m_window.draw(gameOver);
+    m_window.draw(restart);
+}
+void Game::Run()
+{
+    //Game Loop
+    while (m_window.isOpen())
+    {
         sf::Event event;
-		if(((event.type == event.KeyPressed) && event.key.code == Keyboard::Left)) {
-            bat.moveBatLeft();
-        }
-        
-        if(((event.type == event.KeyPressed) && event.key.code == Keyboard::Right)) {
-            bat.moveBatRight();
-        }
-        
-        //LOGIC//////////
-        ball.reboundSides();
-        ball.passTop();
-        ball.passBottom();
-        
-        if (ball.getBallFloatRect().intersects(bat.getBatFloatRect())) {
-            ball.reboundBatorAI();
-        }
-        
-        if (ball.getBallFloatRect().intersects(aibat.getAIBatFloatRect())) { 
-            ball.reboundBatorAI();
-        }
-
-        if (ball.getBallFloatRect().left > (aibat.getAIBatFloatRect().left) + 50) {
-              if (aibatcounter % 60 == 0) aibat.moveAIBatRight();
-        }
-        
-        if (ball.getBallFloatRect().left < (aibat.getAIBatFloatRect().left) + 50) {
-              if (aibatcounter % 60 == 0) aibat.moveAIBatLeft();
-        }
-    
-        if (ball.getBallPosition.x > windowWidth)
-            aibat.AIBatSpeedReverse();
-      
-        
-        //TEXT and FONT
-        std::stringstream ss;
-                
-        ss << "Score: " << batscore <<"       Lives: " << lives;
-         
-        Text text;
-        Font font;
-        font.loadFromFile("Nexa Light.otf");
-
-        text.setFont(font);
-        text.setCharacterSize(45);
-        text.setFillColor(sf::Color::White);
-        
-        text.setString(ss.str());
-
-        
-        // PAUSE MESSAGE
-        
-        std::stringstream ss2;
-        ss2 << "You ran out of lives. \n\nYour score is " << batscore <<".\n\nPress any key to play again.";
-         Text pauseMessage;
-        
-        
-        pauseMessage.setCharacterSize(50);
-        pauseMessage.setPosition(windowWidth/2-400, windowHeight/2-100);
-        pauseMessage.setFont(font);
-        pauseMessage.setString(ss2.str());
-
-        // // START MESSAGE
-        //     std::stringstream ss3;
-        //     ss3 << "Welcome to Pong.\n\nPress any key to begin";
-        //      Text startMessage;
-            
-        //     startMessage.setCharacterSize(50);
-        //      startMessage.setPosition(windowWidth/2-400, windowHeight/2-100);
-        //     startMessage.setFont(font);
-        // startMessage.setString(ss3.str());
-
-        // UPDATE
-        if(aibatcounter == 1000000) {
-            aibatcounter = 0;
-        }
-        aibatcounter++;
-        ball.update();
-        bat.update();
-        aibat.update();
-
-        // DRAW
-        window.clear(Color(26, 128, 182, 255));
-       
-        if (lives == 0) {
-            window.draw(pauseMessage);
-            ball.stop();
-            
-            if(event.type == event.KeyPressed) {
-                lives = 3;
-                batscore = 0;
-                ball.go();
+        while (m_window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                m_window.close();
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::P)
+            {
+                if(!isGameOver)
+                    isPaused = !isPaused;
             }
-        }
-        else if (lives == -1) {
-            // window.draw(startMessage);
-            ball.stop();
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::R)
+                RestartGame();
 
-            if(event.type == event.KeyPressed) {
-                lives = 3;
-                batscore = 0;
-                ball.go();
-            }
+            if (event.type == Event::KeyPressed && event.key.code == sf::Keyboard::W)
+                std::cout << " I work " << std::endl;
         }
-        else {
-            window.draw(bat.getBatObject());
-            window.draw(ball.getBallObject());
-            
-            window.draw(text);
-            window.draw((aibat.getAIBatObject()));
+
+        m_window.clear();
+        HandleCollision();
+
+        if (!isPaused)
+        {
+            HandleInput();
+            Update();
         }
-        window.display();
+        if (isPaused)
+            pause.setString("Game Paused");
+        else
+            pause.setString("");
+        Draw();
+        m_window.display();
     }
 }

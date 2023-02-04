@@ -21,11 +21,22 @@ int main(void)
                 window.close();
         }
 		window.clear(sf::Color(129, 181, 221, 0));
-in:        
-		if (Menu(window)) {
-            bool state = Start(window);
-            if (state) goto in;
-        }
+
+        bool state = false;
+        do {
+            switch (Menu(window))
+            {
+                case 1:
+                    state = Start(window);
+                    break;
+                case 2:
+                    state = Info(window);
+                    break;
+                case 3:
+                    state = false;
+                    window.close();
+            }
+        } while (state);
 
         window.clear(sf::Color(100, 100, 100, 0));
 
